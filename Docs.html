@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>99 Nights | Bring Items Script</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1e1e2f;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #27273f;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff99;
+        }
+        section {
+            padding: 20px;
+        }
+        pre {
+            background: #2e2e4d;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        h2 {
+            color: #00ccff;
+        }
+        ul {
+            line-height: 1.6;
+        }
+        code {
+            color: #ffcc00;
+        }
+    </style>
+</head>
+<body>
+    <header>99 Nights | Bring Items Script</header>
+
+    <section>
+        <h2>Описание:</h2>
+        <p>Этот скрипт позволяет автоматически собирать предметы из папки <code>workspace.Items</code> в игре 99 Nights. Работает через <code>RemoteEvent</code> <code>RequestStartDraggingItem</code>.</p>
+    </section>
+
+    <section>
+        <h2>Пример полного списка предметов:</h2>
+        <pre>
+local AllItems = {
+    "Old Sack","Good Sack","Infernal Sack","Giant Sack","Admin Sack",
+    "Old Axe","Good Axe","Ice Axe","Strong Axe","Chainsaw","Admin Axe",
+    "Old Rod","Good Rod","Strong Rod","Old Taming Flute","Good Taming Flute","Strong Taming Flute",
+    "Carrot","Corn","Pumpkin","Berry","Apple","Morsel","Cooked Morsel",
+    "Steak","Cooked Steak","Ribs","Cooked Ribs","Cake","Chili","Stew","Hearty Stew",
+    "Meat Sandwich","Seafood Chowder","Steak Dinner","Pumpkin Soup","BBQ Ribs",
+    "Carrot Cake","Jar o' Jelly","Candy Apple","Candy Corn","Pumpkin Pie","Cotton Candy"
+    -- (и остальные предметы)
+}
+        </pre>
+    </section>
+
+    <section>
+        <h2>Bring Items Скрипт:</h2>
+        <pre>
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local player = Players.LocalPlayer
+local Event = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("RequestStartDraggingItem")
+
+local AllItems = { "Old Sack","Good Sack","Infernal Sack","Giant Sack","Admin Sack", ... } -- полный список
+
+local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+if not root then return end
+
+for _, itemName in ipairs(AllItems) do
+    local item = workspace.Items:FindFirstChild(itemName)
+    if item then
+        Event:FireServer(item)
+        -- Если предмет модель, телепортируем
+        if item:IsA("Model") then
+            item:PivotTo(root.CFrame * CFrame.new(0,0,-5))
+        else
+            item.CFrame = root.CFrame * CFrame.new(0,0,-5)
+        end
+        task.wait(0.2) -- маленькая пауза
+    end
+end
+        </pre>
+    </section>
+
+    <section>
+        <h2>Советы:</h2>
+        <ul>
+            <li>Используйте паузы (<code>task.wait()</code>) между предметами, чтобы сервер не заблокировал события.</li>
+            <li>Для больших списков (>200 предметов) лучше разделять на категории, чтобы UI не лагал.</li>
+            <li>Для моделей используйте <code>PivotTo</code>, чтобы предмет телепортировался корректно.</li>
+        </ul>
+    </section>
+</body>
+</html>
