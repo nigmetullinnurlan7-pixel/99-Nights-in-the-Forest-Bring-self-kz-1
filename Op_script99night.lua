@@ -1,3 +1,89 @@
+-- BriAry Style Splash Screen
+
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
+
+-- GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "SplashScreen"
+gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
+gui.Parent = CoreGui
+
+-- Background
+local bg = Instance.new("Frame")
+bg.Size = UDim2.new(1,0,1,0)
+bg.BackgroundColor3 = Color3.fromRGB(10,10,10)
+bg.Parent = gui
+
+-- Logo
+local logo = Instance.new("TextLabel")
+logo.Size = UDim2.new(0,300,0,100)
+logo.Position = UDim2.new(0.5,-150,0.4,-50)
+logo.BackgroundTransparency = 1
+logo.Text = "BriAry"
+logo.TextColor3 = Color3.fromRGB(255,255,255)
+logo.TextScaled = true
+logo.Font = Enum.Font.GothamBold
+logo.Parent = bg
+
+-- Loading text
+local loading = Instance.new("TextLabel")
+loading.Size = UDim2.new(0,200,0,50)
+loading.Position = UDim2.new(0.5,-100,0.6,0)
+loading.BackgroundTransparency = 1
+loading.Text = "Loading..."
+loading.TextColor3 = Color3.fromRGB(180,180,180)
+loading.TextScaled = true
+loading.Font = Enum.Font.Gotham
+loading.Parent = bg
+
+-- Loading bar background
+local barBg = Instance.new("Frame")
+barBg.Size = UDim2.new(0.4,0,0,6)
+barBg.Position = UDim2.new(0.3,0,0.7,0)
+barBg.BackgroundColor3 = Color3.fromRGB(40,40,40)
+barBg.BorderSizePixel = 0
+barBg.Parent = bg
+
+-- Loading bar fill
+local bar = Instance.new("Frame")
+bar.Size = UDim2.new(0,0,1,0)
+bar.BackgroundColor3 = Color3.fromRGB(0,255,120)
+bar.BorderSizePixel = 0
+bar.Parent = barBg
+
+-- Tween loading
+local tween = TweenService:Create(bar, TweenInfo.new(3, Enum.EasingStyle.Quad), {
+    Size = UDim2.new(1,0,1,0)
+})
+
+tween:Play()
+
+-- Fade out after loading
+tween.Completed:Wait()
+
+wait(0.5)
+
+local fade = TweenService:Create(bg, TweenInfo.new(1), {
+    BackgroundTransparency = 1
+})
+
+fade:Play()
+
+for _,v in pairs(bg:GetDescendants()) do
+    if v:IsA("TextLabel") or v:IsA("Frame") then
+        TweenService:Create(v, TweenInfo.new(1), {
+            BackgroundTransparency = 1,
+            TextTransparency = 1
+        }):Play()
+    end
+end
+
+wait(1)
+gui:Destroy()
+
+
 --// SERVICES
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
